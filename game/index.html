@@ -1,0 +1,130 @@
+<!doctype html>
+<!-- AZURA — a 3D open-world crime game. Entry point: loads style.css, the HUD
+     DOM and the ES modules under game/src/. All names, characters and places
+     are original. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AZURA — Open-World Crime</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<canvas id="game" aria-label="Azura: an open-world crime game. Drive, steal cars, outrun Azura PD and run jobs for Luna Marlowe."></canvas>
+
+<div id="hud">
+  <!-- Job card, top left -->
+  <div id="jobCard" class="panel" style="display:none">
+    <div class="job-head"><span id="jobTitle">JOB 01 — FIRST LIGHT</span><span id="jobStage">STAGE 1 / 10</span></div>
+    <div id="jobGoal" class="job-goal"></div>
+    <div class="job-row"><span id="jobClock"></span><span id="jobNext"></span></div>
+    <div class="job-track"><div id="jobBar"></div></div>
+  </div>
+
+  <!-- Clock / money / wanted, top right -->
+  <div id="topRight" class="panel">
+    <div class="tr-row"><span id="clockBox">18:20</span><span id="cashBox">$1,250</span></div>
+    <div class="tr-row"><span id="starRow" class="stars">☆☆☆☆☆</span><span id="wantedTag">CLEAN</span></div>
+    <div class="tr-row small"><span id="rankTag">ROOKIE</span><span id="respectTag">RESPECT 0</span></div>
+  </div>
+
+  <!-- APD dispatch -->
+  <div id="dispatchBox" class="panel"></div>
+
+  <!-- District standing -->
+  <div id="standingBox" class="panel"></div>
+
+  <!-- Weapon rack -->
+  <div id="gunRow"></div>
+
+  <!-- Minimap, bottom left -->
+  <div id="mapWrap">
+    <canvas id="mapCanvas" width="190" height="190"></canvas>
+    <div id="mapLabel">CANAL ST • MARINA CANAL — STANDING 0</div>
+  </div>
+
+  <!-- Vitals -->
+  <div id="vitals">
+    <div class="bar-label">HEALTH</div>
+    <div class="bar"><div id="healthBar" class="fill health"></div></div>
+    <div class="bar-label">ARMOR</div>
+    <div class="bar"><div id="armorBar" class="fill armor"></div></div>
+  </div>
+
+  <!-- Speed, bottom right -->
+  <div id="speedBox">
+    <div><span id="speedNum">—</span><span id="speedUnit"></span></div>
+    <div id="rideName">ON FOOT</div>
+    <div id="rideCond">WALK — PRESS E NEAR A CAR</div>
+  </div>
+
+  <!-- Radio + garage + packages + skills -->
+  <div id="sideBox">
+    <div id="radioBox" class="panel">♪ AZURA FM 91.7</div>
+    <div id="garageBox" class="panel">🔧 GARAGE ENG 0/3 • ARM 0/3 • NITRO 0/2</div>
+    <div id="packBox" class="panel">📦 HIDDEN PACKAGES 0/12</div>
+    <div id="skillRow"></div>
+  </div>
+
+  <!-- Fixer dialogue, bottom centre -->
+  <div id="talkBox" style="display:none">
+    <div id="talkFace">LM</div>
+    <div class="talk-body">
+      <div class="talk-head"><span id="talkName">LUNA MARLOWE</span><span id="talkRole">FIXER — AZURA</span></div>
+      <div id="talkText"></div>
+    </div>
+  </div>
+
+  <div id="hintLine"></div>
+  <div id="bannerLine" style="display:none"></div>
+</div>
+
+<!-- Start screen -->
+<div id="menu">
+  <div class="menu-card">
+    <div class="menu-kicker">AZURA • AN OPEN-WORLD CRIME GAME</div>
+    <h1>AZURA</h1>
+    <p class="menu-story">Golden hour over the canal city. Ten jobs from fixer Luna Marlowe.
+    Steal cars, outrun Azura PD, race the canal road, drive taxi fares, upgrade
+    your ride at the Old Harbor garage — and make a name for yourself from
+    Marina Canal to the pier.</p>
+    <div id="menuSave" class="menu-save">NEW CAREER — NO SAVE YET</div>
+    <div class="menu-controls">
+      WASD MOVE / DRIVE &nbsp;•&nbsp; E ENTER &amp; STEAL CAR &nbsp;•&nbsp; F PUNCH &nbsp;•&nbsp; CLICK SHOOT<br>
+      Q SWAP PLATES &nbsp;•&nbsp; R QUICK FIX &nbsp;•&nbsp; V EYES OUT &nbsp;•&nbsp; C RADIO &nbsp;•&nbsp; P PAUSE<br>
+      T SIDE ERRAND (RACE / TAXI / COURIER / STUNT) &nbsp;•&nbsp; G GARAGE (AT OLD HARBOR) &nbsp;•&nbsp; N NITRO
+    </div>
+    <button id="startBtn">START ENGINE</button>
+    <button id="continueBtn" class="ghost">CONTINUE CAREER</button>
+    <div class="menu-foot">A fully original game. No real city, person or brand appears in it.</div>
+  </div>
+</div>
+
+<!-- Garage overlay -->
+<div id="garage" style="display:none">
+  <div class="menu-card">
+    <div class="menu-kicker">OLD HARBOR • AZURA GARAGE</div>
+    <h1 style="font-size:42px">GARAGE</h1>
+    <p class="menu-story">Spend your cash. Upgrades apply to every car you drive.</p>
+    <div id="garageMoney" class="menu-save"></div>
+    <div class="garage-row"><span>ENGINE — top speed +8% / level</span><button id="buyEngine">BUY</button></div>
+    <div class="garage-row"><span>ARMOR — crash damage −20% / level</span><button id="buyArmor">BUY</button></div>
+    <div class="garage-row"><span>NITRO — press N for a speed boost</span><button id="buyNitro">BUY</button></div>
+    <div class="menu-controls">G / ESC TO LEAVE THE GARAGE</div>
+  </div>
+</div>
+
+<!-- Busted / wasted -->
+<div id="gameover" style="display:none">
+  <div class="menu-card">
+    <h1 id="gameoverTitle">BUSTED</h1>
+    <p id="gameoverText" class="menu-story"></p>
+    <div class="menu-controls">PRESS ENTER TO CONTINUE</div>
+  </div>
+</div>
+
+<script src="./vendor/three.min.js"></script>
+<script type="module" src="./src/boot.js"></script>
+</body>
+</html>
